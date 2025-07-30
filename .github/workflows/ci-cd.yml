@@ -1,3 +1,46 @@
+# CI-CD Pipeline for fintech-app
+#
+# This GitHub Actions workflow automates the build, test, Docker image creation, push to AWS ECR,
+# and deployment to AWS EKS for the fintech-app project. It supports manual triggers with environment
+# and image tag selection, as well as automatic triggers on push and pull request events to the main branch.
+#
+# Workflow Features:
+# - Supports deployment to dev, qa, uat, and prod environments.
+# - Builds the Java application using Maven and runs SonarQube code analysis.
+# - Builds and pushes Docker images to AWS ECR with unique or user-specified tags.
+# - Deploys to environment-specific EKS clusters using Kustomize overlays.
+# - Installs EKS add-ons and applies monitoring/logging configurations.
+# - Sends Slack notifications for build and deployment status (success/failure).
+# - Cleans up local Docker images after build.
+#
+# Environment Variables:
+#   AWS_REGION: AWS region for ECR/EKS operations.
+#   AWS_ACCOUNT_ID: AWS account ID for ECR/EKS.
+#   ECR_REPO: Name of the ECR repository.
+#
+# Secrets Required:
+#   AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY: For AWS authentication.
+#   SONAR_TOKEN, SONAR_HOST_URL: For SonarQube analysis.
+#   SLACK_WEBHOOK_URL: For Slack notifications.
+#
+# Jobs:
+#   build-and-push:
+#     - Checks out code, sets up Java, builds with Maven, runs SonarQube scan.
+#     - Determines Docker image tag (timestamp or user input).
+#     - Authenticates with AWS, builds and pushes Docker image to ECR.
+#     - Cleans up local Docker resources.
+#     - Notifies Slack on build success/failure.
+#
+#   deploy:
+#     - Checks out code, notifies Slack of deployment start.
+#     - Configures kubectl for the target EKS cluster.
+#     - Installs EKS add-ons and applies monitoring/logging manifests.
+#     - Updates Kustomize overlay with the new image and deploys to EKS.
+#     - Notifies Slack on deployment success/failure.
+#
+# Usage:
+# - Trigger manually via workflow_dispatch or automatically on push/PR to main.
+# - Customize deployment environment and Docker image tag as needed.
 permissions:
   id-token: write
   contents: read

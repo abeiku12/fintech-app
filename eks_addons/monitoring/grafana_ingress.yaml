@@ -1,3 +1,22 @@
+# This Kubernetes Ingress resource configures external access to the Grafana service
+# in the "monitoring" namespace using AWS Application Load Balancer (ALB).
+#
+# Key Annotations:
+# - alb.ingress.kubernetes.io/scheme: Sets the ALB to be internet-facing.
+# - alb.ingress.kubernetes.io/certificate-arn: Specifies the ACM certificate for HTTPS.
+# - alb.ingress.kubernetes.io/listen-ports: Configures ALB to listen on port 443 (HTTPS).
+# - alb.ingress.kubernetes.io/target-type: Targets IP addresses of pods.
+# - alb.ingress.kubernetes.io/healthcheck-port & alb.ingress.kubernetes.io/healthcheck-path:
+#   Define health check settings for the target group.
+# - alb.ingress.kubernetes.io/success-codes: Accepts HTTP 200 and 302 as healthy responses.
+# - alb.ingress.kubernetes.io/load-balancer-name: Names the ALB as "grafana-alb".
+# - alb.ingress.kubernetes.io/target-group-attributes: Sets deregistration delay to 30 seconds.
+# - alb.ingress.kubernetes.io/ssl-redirect: Redirects HTTP to HTTPS on port 443.
+#
+# Spec:
+# - ingressClassName: Uses the "alb" ingress controller.
+# - rules: Routes traffic for host "grafana.dominionsystem.org" to the "prometheus-stack-grafana"
+#   service on port 80, matching all paths with prefix "/".
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
